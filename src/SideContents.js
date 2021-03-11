@@ -1,5 +1,5 @@
 import React from 'react';
-import Contents from './contents';
+import Contents from './Contents';
 
 class SideContents extends React.Component {
     constructor(props) {

@@ -1,22 +1,10 @@
-import { render } from '@testing-library/react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Header from './Header';
-import SideContents from './SideContents';
-import MainContents from './MainContents';
+import Container from './Contaner';
 import reportWebVitals from './reportWebVitals';
 
-class Container extends React.Component {
-  render() {
-    return (
-      <div id="container">
-        <MainContents />
-        <SideContents />
-      </div>
-    );
-  }
-}
 class Wrap extends React.Component {
   render() {
     return (

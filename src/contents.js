@@ -6,21 +6,23 @@ function Contents(props) {
     }
     let ReplaceTags = (str) => {
         let tmp = str.replace(/(<br>){1,}/g, "$n$");
-        console.log(tmp)
         let esc = tmp.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
-        console.log(esc)
         return esc.replace(/\$n\$/g, "<br>");
+    }
+    let link2article = (e) => {
+        e.preventDefault();
+        window.location.search = "?n=" + props.articleNumber;
     }
 
     let cls = props.class + "";
     let caption = props.text.split(/---/)[0] + "...";
-    console.log(caption)
+    // console.log(caption)
     let body = cls.indexOf("articleList") ?
         createInnerHTML(props.text + "<hr/>") :
         createInnerHTML("<img src='" + props.img + "'>" + ReplaceTags(caption) + "<hr/>");
 
     return (
-        <div className={"content " + props.class} id={props.id}>
+        <div className={"content " + props.class} id={props.id} onClick={link2article}>
             <h2 className="entry_header">{props.title}</h2>
             <div className="entry_body"
                 dangerouslySetInnerHTML={body}>

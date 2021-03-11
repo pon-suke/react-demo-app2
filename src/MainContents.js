@@ -1,38 +1,16 @@
 import React from 'react';
-import Contents from './contents';
+import Contents from './Contents';
 
 class MainContents extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             loading: false,
-            param: {}
+            param: props.param
         }
     }
 
     componentDidMount() {
-        //URLパラメータを文字列で取得(?含む)
-        let urlParamStr = window.location.search
-        if (urlParamStr) {
-            //?を除去
-            urlParamStr = urlParamStr.substring(1)
-            let params = {}
-            //urlパラメータをオブジェクトにまとめる
-            urlParamStr.split('&').forEach(param => {
-                const temp = param.split('=')
-                //pramsオブジェクトにパラメータを追加
-                params = {
-                    ...params,
-                    [temp[0]]: temp[1]
-                }
-            })
-            let tmp = this.state;
-            this.setState({
-                ...tmp,
-                param: params
-            })
-        }
-
         // 記事を取得
         const key = {
             headers: { 'X-API-KEY': '9b30e206-4b28-4453-91f5-5d39d40d15a3' },
@@ -52,7 +30,7 @@ class MainContents extends React.Component {
                 console.error(error);
             });
     }
-    renderContents(i, c = "") {
+    renderContents(i, c = "", d) {
         return <Contents
             key={i.id}
             title={i.title}
@@ -60,21 +38,27 @@ class MainContents extends React.Component {
             date={i.updatedAt}
             class={c + " maincontent"}
             img={i.thumbnail.url}
+            articleNumber={d}
         />;
     }
 
     render() {
         if (this.state.loading) {
-            let p = this.state.param.p;
-            console.log(this.state)
-            let hoge = "";
-            if (Math.sign(p)) hoge = "articleList";
-
+            let p = this.state.param.p,
+                n = this.state.param.n,
+                exClass = (Math.sign(p) || p === undefined) ? "articleList" : "",
+                isDetail = Math.sign(n) ? n : 0;
+            console.log(p, n, exClass, isDetail);
+            console.log(this.state);
+            let data = this.state.data;
             return (
                 <div id="main" >
-                    {this.state.data.map(d => {
-                        return this.renderContents(d, hoge)
-                    })}
+                    {!isDetail
+                        ? this.state.data.map((d, i) => {
+                            return this.renderContents(d, exClass, (data.length - i))
+                        })
+                        : this.renderContents(data.reverse()[isDetail - 1])
+                    }
                 </div>
             );
         } else {
