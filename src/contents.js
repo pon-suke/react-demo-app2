@@ -10,6 +10,7 @@ function Contents(props) {
         return esc.replace(/\$n\$/g, "<br>");
     }
     let link2article = (e) => {
+        if (props.articleNumber == undefined) return;
         e.preventDefault();
         window.location.search = "?n=" + props.articleNumber;
     }
