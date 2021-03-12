@@ -14,7 +14,7 @@ class PageNavi extends React.Component {
         return (
             <div id="page_navi" className={this.state.class}>
                 {!this.state.param.isDetail
-                    ? PageNavi_list(this.state.param)//記事一覧
+                    ? PageNavi_list(this.state)//記事一覧
                     : PageNavi_home()//記事詳細
                 }
             </div>
@@ -22,11 +22,17 @@ class PageNavi extends React.Component {
     }
 }
 function PageNavi_list(props) {
+    let pages = props.max / 10;
+    console.log(props)
     return (
         <p>
-            {props.n != 0 ? ''
-                : "<a href='?n=" + (props.n - 1) + "'>前の記事へ</a>&emsp;"}
+            {props.param.p == 1 ? ''
+                : <a href={"?p=" + (props.param.p - 1)}>前のページへ</a>}
+            <span>&emsp;</span>
             <a href="?p=1">ホーム</a>
+            <span>&emsp;</span>
+            {props.param.p == Math.ceil(pages) ? ""
+                : <a href={"?p=" + (parseInt(props.param.p) + 1)}>次のページへ</a>}
         </p>
     );
 }
