@@ -16,6 +16,7 @@ const getParams = () => {
         if (params.p == undefined) params.p = 1;
         let n = params.n,
             isDetail = Math.sign(n) ? n : 0;
+        if (isNaN(n)) params.n = 0;
         params.isDetail = isDetail;
         return params;
     } else {

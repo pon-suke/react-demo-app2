@@ -5,9 +5,41 @@ class MainContents extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            loading: false,
             param: props.param,
-            data: props.data
+            data: props.data.contents,
+            max: props.data.totalCount
         }
+    }
+
+    componentDidMount() {
+        if (!this.state.param.isDetail) {
+            let tmp = this.state;
+            this.setState({
+                ...tmp,
+                loading: true,
+            });
+            return;
+        }
+        // 記事を取得
+        const key = {
+            headers: { 'X-API-KEY': '9b30e206-4b28-4453-91f5-5d39d40d15a3' },
+        };
+        let offset = this.state.max - this.state.param.n;
+        return fetch('https://ponsuke.microcms.io/api/v1/diary?offset=' + offset + '&limit=1', key)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                let tmp = this.state;
+                this.setState({
+                    ...tmp,
+                    loading: true,
+                    data: responseJson
+                });
+                console.log(responseJson)
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     renderContents(i, c = "", d) {
@@ -23,21 +55,18 @@ class MainContents extends React.Component {
     }
 
     render() {
-        if (this.state.data) {
+        if (this.state.data && this.state.loading) {
             console.log(this.state);
-            let p = this.state.param.p,
-                n = this.state.param.n,
-                exClass = (Math.sign(p) || p === undefined) ? "articleList" : "",
-                isDetail = Math.sign(n) ? n : 0;
-            console.log(p, n, exClass, isDetail);
+            let exClass = (Math.sign(this.state.param.p) || this.state.param.p == undefined) ? "articleList" : "";
             let data = this.state.data;
+            let offset = this.state.max - 10 * (this.state.param.p - 1);
             return (
                 <div id="main" >
-                    {!isDetail
+                    {!this.state.param.isDetail
                         ? this.state.data.map((d, i) => {
-                            return this.renderContents(d, exClass, (data.length - i))
+                            return this.renderContents(d, exClass, offset-i)
                         })
-                        : this.renderContents(data.reverse()[isDetail - 1])
+                        : this.renderContents(data.contents[0])
                     }
                 </div>
             );

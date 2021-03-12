@@ -16,15 +16,16 @@ class Container extends React.Component {
         const key = {
             headers: { 'X-API-KEY': '9b30e206-4b28-4453-91f5-5d39d40d15a3' },
         };
-        let p = (getParams().p - 1) * 10;
-        return fetch('https://ponsuke.microcms.io/api/v1/diary?offset=' + p, key)
+        let param = getParams(),
+            offset = (param.p - 1) * 10;
+        return fetch('https://ponsuke.microcms.io/api/v1/diary?offset=' + offset, key)
             .then((response) => response.json())
             .then((responseJson) => {
                 let tmp = this.state;
                 this.setState({
                     ...tmp,
                     loading: true,
-                    data: responseJson.contents,
+                    data: responseJson
                 });
                 console.log(responseJson)
             })
@@ -34,14 +35,14 @@ class Container extends React.Component {
     }
 
     render() {
-        console.log(this.state)
+        console.log(getParams())
         if (this.state.loading) {
             return (
                 <div id="container">
                     <MainContents param={getParams()} data={this.state.data} />
-                    <PageNavi class={"sp_only"} param={getParams()} max={this.state.data.length} />
+                    <PageNavi class={"sp_only"} param={getParams()} max={this.state.data.totalCount} />
                     <SideContents />
-                    <PageNavi class={"pc_only"} />
+                    <PageNavi class={"pc_only"} param={getParams()} max={this.state.data.totalCount} />
                 </div>
             );
         } else {
